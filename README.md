@@ -1,5 +1,14 @@
-# eng-poo
+# Exemplo de Conta Bancária em C#
 
+Este é um exemplo simples em C# simulando operações básicas de uma conta bancária, com:
+
+- depósito
+- saque
+- associação entre `Conta` e `Cliente`
+
+## Código
+
+```csharp
 using System;
 					
 public class Program
@@ -95,3 +104,31 @@ public class Cliente
 	
 	
 }
+```
+
+## O que o código faz
+
+O programa:
+
+1. recebe um valor de depósito
+2. recebe um valor de saque
+3. cria um cliente
+4. cria uma conta vinculada ao cliente
+5. realiza depósito e saque
+6. exibe o saldo final
+
+## Observações
+
+- A classe `Conta` possui uma referência para `Cliente`
+- O saldo só pode ser alterado pelos métodos `Depositar` e `Sacar`
+- O código usa `Exception` para validar regras simples de negócio
+
+## Exemplo de execução
+
+```text
+Bem-vindo ao caixa rápido! Digite o valor do deposito
+1000
+Digite o valor do saque
+300
+Saque realizado com sucesso! Saldo restante: 700 | Cliente: Janderson
+```
