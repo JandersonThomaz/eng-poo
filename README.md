@@ -1,15 +1,18 @@
-# Exemplo de Conta Bancária em C#
+# Simulador de Conta Bancária em C#
 
-Este é um exemplo simples em C# simulando operações básicas de uma conta bancária, com:
+Exemplo simples em C# para praticar:
 
-- depósito
-- saque
+- entrada de dados com `Console.ReadLine()`
+- orientação a objetos
 - associação entre `Conta` e `Cliente`
+- composição entre `Conta` e `Movimentacao`
+- operações de depósito e saque
 
 ## Código
 
 ```csharp
 using System;
+using System.Collections.Generic;
 					
 public class Program
 {
@@ -35,6 +38,7 @@ public class Program
 	}
 }
 
+//Todo de Movimentacao (Regra: O todo dever ter uma lista da parte)
 public class Conta
 {
 	public Conta(string numero, string agencia, Cliente cliente)
@@ -54,6 +58,9 @@ public class Conta
 	public Cliente Cliente {get; private set; }
 	public decimal Saldo { get; private set; }
 	
+	//apontamento para a parte
+	public List<Movimentacao> ListaDeMovimentacoes {get; private set;} = new List<Movimentacao>();
+	
 	public void Sacar(decimal valor)
 	{
 		if(valor < 0)
@@ -67,6 +74,10 @@ public class Conta
 		}
 		
 		Saldo = Saldo - valor;
+		
+		Movimentacao objMovimentacao = new Movimentacao("Saque",DateTime.Now, this, valor, Saldo);
+		
+		this.ListaDeMovimentacoes.Add(objMovimentacao);
 	}
 	
 	public void Depositar(decimal valor)
@@ -104,24 +115,47 @@ public class Cliente
 	
 	
 }
+
+//Parte de Conta (regra: a parte sempre aponta para o todo que é conta)
+public class Movimentacao
+{
+    public Movimentacao(string tipo, DateTime data, Conta conta, decimal valor, decimal saldo)
+    {
+        this.tipo = tipo;
+        this.data = data;
+        this.Conta = conta;
+        this.Saldo = saldo;
+        this.Valor = valor;
+    }
+    
+    //atributos
+    private string tipo;
+    private DateTime data;
+    
+    //propriedades
+    
+    //apontamento para o todo
+    public Conta Conta {get; private set;}
+    public decimal Valor { get; private set;}
+    public decimal Saldo { get; private set;}
+    
+    
+}
 ```
 
-## O que o código faz
+## Conceitos aplicados
 
-O programa:
+### 1. Associação
+A classe `Conta` possui uma referência para `Cliente`, indicando que uma conta está associada a um cliente.
 
-1. recebe um valor de depósito
-2. recebe um valor de saque
-3. cria um cliente
-4. cria uma conta vinculada ao cliente
-5. realiza depósito e saque
-6. exibe o saldo final
+### 2. Composição
+A classe `Conta` mantém uma lista de `Movimentacao`, e cada `Movimentacao` aponta para a `Conta` à qual pertence. Isso representa uma relação de todo-parte.
 
-## Observações
+### 3. Encapsulamento
+As propriedades usam `private set`, permitindo que alterações sejam feitas apenas pelos métodos da própria classe.
 
-- A classe `Conta` possui uma referência para `Cliente`
-- O saldo só pode ser alterado pelos métodos `Depositar` e `Sacar`
-- O código usa `Exception` para validar regras simples de negócio
+### 4. Regras de negócio
+Os métodos `Depositar` e `Sacar` validam valores inválidos e impedem saque maior que o saldo.
 
 ## Exemplo de execução
 
@@ -132,3 +166,10 @@ Digite o valor do saque
 300
 Saque realizado com sucesso! Saldo restante: 700 | Cliente: Janderson
 ```
+
+## Observações
+
+- O código registra movimentação apenas no saque
+- O depósito altera o saldo, mas não adiciona item em `ListaDeMovimentacoes` ainda... será feito na próxima aula
+- Os campos `numero`, `agencia`, `rg`, `dataDeNascimento`, `tipo` e `data` existem, mas não estão sendo exibidos no console
+- Esse exemplo é útil para estudar associação, composição, encapsulamento e regras simples de negócio
