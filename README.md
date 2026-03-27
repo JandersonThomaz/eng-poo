@@ -1,12 +1,16 @@
 # Simulador de Conta Bancária em C#
 
-Exemplo simples em C# para praticar:
+Este projeto apresenta um exemplo simples em C# para praticar conceitos de Programação Orientada a Objetos, simulando operações básicas de uma conta bancária.
+
+## Conceitos trabalhados
 
 - entrada de dados com `Console.ReadLine()`
-- orientação a objetos
+- criação de objetos
 - associação entre `Conta` e `Cliente`
 - composição entre `Conta` e `Movimentacao`
-- operações de depósito e saque
+- encapsulamento com `private set`
+- regras básicas de negócio para depósito e saque
+- uso de lista para armazenar histórico de movimentações
 
 ## Código
 
@@ -34,6 +38,11 @@ public class Program
 		objConta.Sacar(valorDoSaque);
 		
 		Console.WriteLine($"Saque realizado com sucesso! Saldo restante: {objConta.Saldo} | Cliente: {objConta.Cliente.Nome}");
+		
+		foreach(var movimentacao in objConta.ListaDeMovimentacoes)
+		{
+		    	Console.WriteLine($"{objConta.Cliente.Nome} | {movimentacao.Data} | {movimentacao.Valor} | {movimentacao.Tipo}");
+		}
 	
 	}
 }
@@ -54,7 +63,6 @@ public class Conta
 	
 	
 	//propriedades
-	
 	public Cliente Cliente {get; private set; }
 	public decimal Saldo { get; private set; }
 	
@@ -88,6 +96,10 @@ public class Conta
 		}
 		
 		Saldo = Saldo + valor;
+		
+		Movimentacao objMovimentacao = new Movimentacao("Deposito",DateTime.Now, this, valor, Saldo);
+		
+		this.ListaDeMovimentacoes.Add(objMovimentacao);
 	}
 	
 }
@@ -121,21 +133,25 @@ public class Movimentacao
 {
     public Movimentacao(string tipo, DateTime data, Conta conta, decimal valor, decimal saldo)
     {
-        this.tipo = tipo;
-        this.data = data;
+        this.Tipo = tipo;
+        this.Data = data;
         this.Conta = conta;
         this.Saldo = saldo;
         this.Valor = valor;
     }
     
     //atributos
-    private string tipo;
-    private DateTime data;
+    
+
     
     //propriedades
     
     //apontamento para o todo
     public Conta Conta {get; private set;}
+    
+    public string Tipo {get; private set;}
+    public DateTime Data {get; private set;}
+
     public decimal Valor { get; private set;}
     public decimal Saldo { get; private set;}
     
@@ -143,19 +159,39 @@ public class Movimentacao
 }
 ```
 
-## Conceitos aplicados
+## Estrutura das classes
 
-### 1. Associação
-A classe `Conta` possui uma referência para `Cliente`, indicando que uma conta está associada a um cliente.
+### Cliente
+Representa o titular da conta, contendo informações básicas como nome e CPF.
 
-### 2. Composição
-A classe `Conta` mantém uma lista de `Movimentacao`, e cada `Movimentacao` aponta para a `Conta` à qual pertence. Isso representa uma relação de todo-parte.
+### Conta
+Representa a conta bancária. Ela possui:
+- número
+- agência
+- cliente
+- saldo
+- lista de movimentações
 
-### 3. Encapsulamento
-As propriedades usam `private set`, permitindo que alterações sejam feitas apenas pelos métodos da própria classe.
+Além disso, contém os métodos:
+- `Depositar`
+- `Sacar`
 
-### 4. Regras de negócio
-Os métodos `Depositar` e `Sacar` validam valores inválidos e impedem saque maior que o saldo.
+### Movimentacao
+Representa cada operação realizada na conta, armazenando:
+- tipo da movimentação
+- data
+- valor
+- saldo após a operação
+- referência para a conta
+
+## Relacionamentos
+
+### Associação
+`Conta` possui um `Cliente`.
+
+### Composição
+`Conta` possui uma lista de `Movimentacao`.  
+As movimentações pertencem à conta e fazem parte do seu histórico.
 
 ## Exemplo de execução
 
@@ -165,11 +201,24 @@ Bem-vindo ao caixa rápido! Digite o valor do deposito
 Digite o valor do saque
 300
 Saque realizado com sucesso! Saldo restante: 700 | Cliente: Janderson
+Janderson | 27/03/2026 10:00:00 | 1000 | Deposito
+Janderson | 27/03/2026 10:00:10 | 300 | Saque
 ```
 
 ## Observações
 
-- O código registra movimentação apenas no saque
-- O depósito altera o saldo, mas não adiciona item em `ListaDeMovimentacoes` ainda... será feito na próxima aula
-- Os campos `numero`, `agencia`, `rg`, `dataDeNascimento`, `tipo` e `data` existem, mas não estão sendo exibidos no console
-- Esse exemplo é útil para estudar associação, composição, encapsulamento e regras simples de negócio
+- Agora o sistema registra tanto depósito quanto saque no histórico
+- O histórico é exibido ao final com `foreach`
+- O código é bom para estudar associação, composição, encapsulamento e lista de objetos
+- Os campos `numero`, `agencia`, `rg` e `dataDeNascimento` existem, mas ainda não são exibidos na saída
+
+## Possíveis melhorias
+
+- validar entrada para evitar erro no `Convert.ToDecimal`
+- impedir depósito de valor zero
+- impedir saque de valor zero
+- mostrar saldo em formato monetário
+- exibir número da conta e agência
+- criar método para listar movimentações dentro da própria classe `Conta`
+- usar `DateTime.Parse` ou `DateOnly` para data de nascimento
+```
