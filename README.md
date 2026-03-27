@@ -209,16 +209,7 @@ Janderson | 27/03/2026 10:00:10 | 300 | Saque
 
 - Agora o sistema registra tanto depósito quanto saque no histórico
 - O histórico é exibido ao final com `foreach`
-- O código é bom para estudar associação, composição, encapsulamento e lista de objetos
+- O código é bom para estudar associação/agregação, composição, encapsulamento e lista de objetos
 - Os campos `numero`, `agencia`, `rg` e `dataDeNascimento` existem, mas ainda não são exibidos na saída
 
-## Possíveis melhorias
-
-- validar entrada para evitar erro no `Convert.ToDecimal`
-- impedir depósito de valor zero
-- impedir saque de valor zero
-- mostrar saldo em formato monetário
-- exibir número da conta e agência
-- criar método para listar movimentações dentro da própria classe `Conta`
-- usar `DateTime.Parse` ou `DateOnly` para data de nascimento
 ```
